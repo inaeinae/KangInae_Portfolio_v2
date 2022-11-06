@@ -1,0 +1,416 @@
+/* &페이지 */
+html,body {
+	background-color: var(--mainblack);
+	color: var(--mainwhite);
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+
+/* &배경 */
+.bg-circle {
+	width: 43%;
+	padding-bottom: 43%;
+	border-radius: 50%;
+	/* border: 10px solid blue; */
+	border: 10px solid var(--pointblue);
+	
+	left: -13%;
+	bottom: -15%;
+	
+	position: fixed;
+	transition: all ease 1.5s;
+}
+
+.photo{
+	position: fixed;
+	left: -4%;
+	bottom: 0;
+}
+
+#profileImg{
+	min-width: 40%;
+	max-width: 40%;
+}
+
+.photo img{
+	width: 100%;
+	vertical-align: bottom;
+}
+
+
+/* &내용 */
+#subInfo{
+	font-size: 1.3vw;
+	font-weight: bold;
+}
+
+.content{
+	width: 70%;
+	
+	position: absolute;
+	right: 0;
+	top: 0;
+	
+	padding-top: 5%;
+	padding-bottom: 5%;
+	
+	font-size: 1.05vw;
+	text-align: left;
+}
+
+#profileInfo{
+	position:fixed;
+}
+
+.detail-info{
+	float: right;
+	margin-left: 32%;
+}
+
+#programInfo{
+	margin-bottom: 6%;
+}
+
+
+/* &타임라인 */
+#timeLine{
+	width: 100%;
+}
+
+#timeGraph{
+	width: 95%;
+	white-space: nowrap;
+	border-spacing: 0px;
+}
+
+#timeGraph td{
+	padding: 0;
+	margin: 0;
+	text-align: center;
+}
+
+#timeGraph td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4), td:nth-child(5){
+	font-size: 1.2vw;
+}
+#timeGraph td:nth-child(2), td:nth-child(3), td:nth-child(4), td:nth-child(5){
+	padding-left: 0.6%;
+}
+
+#timeGraph tr td:nth-last-child(2){
+	padding-left: 3%;
+	color: var(--maingray);
+}
+
+#timeGraph tr td:nth-last-child(1){
+	padding-left: 3%;
+	text-align: left;
+}
+
+.hover-bg{
+	background-color: rgba(256, 256, 256, 0.05);
+}
+
+.hover-color{
+	color: var(--pointblue);
+}
+
+.hover-trans{
+	transition: all ease 0.5s;
+}
+
+/* &능력 */
+.abilityList{
+	width: 95%;
+	line-height: 2.6;
+}
+
+/* 태그 */
+.ability{
+	display: inline-block;
+	white-space: nowrap;
+	line-height: 1.8;
+	border: 0.155vw var(--lightgray) solid;
+	color: var(--lightgray);
+	border-radius: 2vw;
+	padding-left: 1.5%;
+	padding-right: 1.5%;
+	margin-right: 1%;
+	font-size: 0.85vw;
+	cursor: pointer;
+	position: relative;
+}
+.looked{
+	color: #4e4e4e;
+	border: 0.155vw #4e4e4e solid;
+	transition: all ease 0.35s;
+}
+
+/* 강조 태그 */
+.important{
+	border: 0.155vw var(--pointblue) solid;
+	color: var(--pointblue);
+}
+.important-looked{
+	border: 0.155vw #26407b solid;
+	color: #26407b;
+}
+
+/* 클릭 태그 */
+.click{
+	color: var(--mainwhite);
+	border: 0.17vw var(--mainwhite) solid;
+	transition: all ease 0.35s;
+}
+
+
+/* &능력 - 모달 */
+.modal{
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.35);
+	opacity: 0;
+	z-index: 4;
+	transform: scale(1.1);
+	transition: visibility 0s linear 0.35s, opacity 0.35s 0s, transform 0.35s;
+}
+
+.modal p{
+	margin: 0;
+	line-height: 1.5;
+}
+
+.modal p:nth-child(2){
+	margin-bottom: 2rem;
+}
+
+.modal p:nth-child(n+3){
+	margin-top: 1rem;
+}
+
+.modal-content{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: var(--mainwhite);
+	color: var(--mainblack);
+	padding: 4rem 3rem;
+	width: 65%;
+	height: auto;
+	transition: all ease 0.35s;
+	
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.modal-title{
+	text-align: center;
+}
+
+.close-modal{
+	position: sticky;
+	float: right;
+	top: 0;
+	right: 0;
+	cursor: pointer;
+	transform: scale(1.5);
+	color: var(--mainblack);
+}
+
+.close-modal i{
+	transform: scale(1.2);
+}
+
+.show-modal{
+	opacity: 1;
+	display: block;
+	transform: scale(1.0);
+	transition: visibility 0s linear 0s, opacity 0.35s 0s, transform 0.35s;
+}
+
+#mContext{
+	/* text-align: center; */
+}
+
+#mTable {
+	margin: auto;
+	width: 90%;
+	font-size: 1.0vw;
+	border-spacing: 1vw;
+}
+
+#mTable td{
+	text-align: left;
+	word-break: keep-all;
+}
+
+.headTr{
+	font-size: 1.4vw;
+	font-weight: bold;
+	text-align: left;
+}
+
+.hidTr{
+	display: none;
+}
+
+.small-tag{
+	display: inline-block;
+	white-space: nowrap;
+	vertical-align: middle;
+	line-height: 1.6;
+	border-radius: 2vw;
+	padding-left: 1%;
+	padding-right: 1%;
+	margin-left: 1%;
+	font-weight: bold;
+	font-size: 0.7vw;
+}
+
+/* 모달 태그 */
+.pl-tag{
+	border: 0.16vw var(--maingray) solid;
+	color: var(--maingray);
+}
+.tp-tag{
+	border: 0.16vw var(--maingray) solid;
+	background-color: var(--maingray);
+	color: var(--mainwhite);
+}
+/* 타임라인 태그 */
+.tl-tag{
+	border: 0.155vw var(--mainwhite) solid;
+	color: var(--mainwhite);
+	font-size: 0.73vw;
+	font-weight: normal;
+}
+
+.modal-img-block{
+	width: 98%;
+	display: inline-flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.modal-img {
+	display: inline-block;
+}
+
+.modal-img img, video{
+	width: 100%;
+	height: auto;
+}
+
+.two-block{
+	width: 49.5%;
+}
+
+.one-block{
+	width: 99%;
+}
+
+.fixed {
+	position: fixed;
+}
+
+.modal-link{
+	font-weight: bold;
+	cursor: pointer;
+	
+	background-color: var(--mainblack);
+	color: white;
+	padding: 0.3%;
+	transition: all ease 0.35s;
+}
+
+
+/* &도움말 */
+#helpBtn {
+	position: fixed;
+	right: 3vw;
+	bottom: 3vw;
+	width: 3vw;
+	height: 3vw;
+	background-color: var(--mainwhite);
+	border-radius: 50%;
+	z-index: 50;
+	cursor: pointer;
+	transform: scale(1.2);
+	transition: all ease 0.7s;
+	box-shadow: 0px 0px 0.4vw 2px #10121A;
+}
+
+#helpBtn span {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: #10121A;
+}
+
+/* #helpBtn span i{
+	transform: scale(1.2);
+} */
+
+#helpDiv{
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.35);
+	opacity: 0;
+	z-index: 100;
+	transition: visibility 0s linear 0.35s, opacity 0.35s 0s, transform 0.35s;
+}
+
+
+/* &대기화면 */
+#loading {
+	vertical-align: middle;
+  	z-index: 99;
+}
+
+#loading > div {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	display: block;
+  	opacity: 0.6;
+  	background: #000;
+  	z-index: 99;
+  	text-align: center;
+}
+
+#loading > p {
+	font-size: 7.0vw;
+	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	transform: translate( -50%, -100% );
+  	z-index: 100;
+}
+
+.new {
+	border-radius: 50%;
+	background-color: red;
+	
+	position: absolute;
+    top: -.25rem;
+    right: -.25rem;
+    z-index: 10;
+	width: 0.8vw;
+	height: 0.8vw;
+    line-height: 0.8vw;
+    display: inline-block;
+}
+
+.fontArial {
+	font-family: Arial !important;
+}

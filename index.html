@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<meta charset="UTF-8">
+	<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<link href="./resources/css/common.css?ver=1.1" rel="stylesheet">
+	<link href="./resources/css/detail.css?ver=1.1" rel="stylesheet">
+	<!-- 마크다운 파일 -->
+	<script src="https://cdn.jsdelivr.net/npm/showdown@1.9.0/dist/showdown.min.js"></script>
+	<!-- 폰트어썸 -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+	<!-- 파비콘 -->
+	<link rel="icon" href="./resources/img/favicon.svg"/>
+	
+	<title>Kang In Ae</title>
+</head>
+<body onload="resourceLoading();">
+	<div id="helpDiv"></div>
+	<div id="helpBtn"><span><i class="fas fa-question fa-2x"></i></span></div>
+	
+	<div id="loading">
+	    <!-- <img src="./resources/img/loadingbar.gif"> -->
+	    <div></div>
+	    <p class="title">Kang In Ae</p>
+	</div>
+	
+	<div class="position-back bg-circle"></div>
+	
+	<div class="position-front photo block" id="profileImg">
+		<!-- <img src="./resources/img/profile_img.png"> -->
+	</div>
+	
+	<div class="position-front content">
+		<div class="block" id="profileInfo">
+			<p class="title">
+				강인애<br>
+				KANG IN AE
+			</p>
+			<p id="subInfo">
+				1996. 09. 05<br>
+				kkin06@naver.com<br>
+				서일대학교, 소프트웨어공학과
+			</p>
+		</div>
+		
+		<div class="detail-info">
+			<div class="block" id="programInfo" style="width: 100%;">
+				<p class="subtitle">
+					Ability
+				</p>
+				
+				<div class="abilityList">
+					<div onclick="abilityEvent(this);" class="ability">#AndroidStudio</div>
+					<div onclick="abilityEvent(this);" class="ability">#Arduino</div>
+					<div onclick="abilityEvent(this);" class="ability">#AWS</div>
+					<div onclick="abilityEvent(this);" class="ability">#ASP</div>
+					<div onclick="abilityEvent(this);" class="ability">#C</div>
+					<div onclick="abilityEvent(this);" class="ability important">#C#</div>
+					<div onclick="abilityEvent(this);" class="ability">#C++</div>
+					<div onclick="abilityEvent(this);" class="ability">#Database</div>
+					<div onclick="abilityEvent(this);" class="ability">#Git</div>
+					<div onclick="abilityEvent(this);" class="ability important"><div class="new"></div>#HTML & JSP & CSS & JavaScript & jQuery</div>
+					<div onclick="abilityEvent(this);" class="ability">#Illustrator & Photoshop</div>
+					<div onclick="abilityEvent(this);" class="ability">#Java</div>
+					<div onclick="abilityEvent(this);" class="ability">#MFC</div>
+					<div onclick="abilityEvent(this);" class="ability important">#Spring</div>
+					<div onclick="abilityEvent(this);" class="ability">#Unity</div>
+					<div onclick="abilityEvent(this);" class="ability">#Unix</div>
+					<div onclick="abilityEvent(this);" class="ability">#VisualBasic</div>
+					<div onclick="abilityEvent(this);" class="ability">#...</div>
+				</div>
+			</div>
+			
+			
+			<div class="block" id="timeLine">
+				<p class="subtitle">
+					Time Line
+				</p>
+				
+				<div>
+					<table id="timeGraph">
+						<!-- <tr class="hover-trans">
+							<td>tdArr[0]</td>
+							<td>tdArr[1]</td>
+							<td>tdArr[2]</td>
+							<td>tdArr[3]</td>
+							<td>tdArr[4]</td>
+							<td>tableArr[1]</td>
+							<td>tableArr[2]</td>
+						</tr> -->
+					</table>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+	<input id="hidClickModal" value="99999" type="hidden" />
+	<input id="hidModalLength" value="0" type="hidden" />
+	<div class="modal">
+		<div class="modal-content">
+			<span class="close-modal" onclick="toggleModal();" on><i class="far fa-times-circle"></i></span>
+			<p class="modal-title title" id="mTitle"></p>
+			<div id="mContext">
+				<table id="mTable"></table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+	
+	
+<script>
+	/* 배경 스타일 */
+	$(window).on('scroll', function() {
+		var scrollPercent = ($(window).scrollTop() / ($(document).outerHeight() - $(window).height()))*10;
+		var transSize = 43 + (scrollPercent*1.5)
+		$('.bg-circle').css({'width': transSize + '%', 'padding-bottom': transSize + '%'});
+	});
+	
+	/* 이미지 프리로딩 */
+	function resourceLoading() {
+		//병렬처리
+		preloading(2, ['help.png']);
+		preloading(1, ['and_2.png', 'ard_2.png', 'cshop_2.png', 'ill_1.png', 'ill_2.png', 'ill_3.png', 'spr_1.png', 'spr_2.png', 'html_1.png'])
+	}
+	
+	function preloading(type, imageArray) {
+		if(type == 1)
+			var dir = './resources/img/hashtag/';
+		else
+			var dir = './resources/img/';
+		
+		let n = imageArray.length;
+		for (let i = 0; i < n; i++) {
+			let img = new Image();
+			img.src = dir + imageArray[i];
+		}
+	}
+	
+	/* 능력 모달창 */
+	var mLength = document.getElementById('hidModalLength');
+	function toggleModal(type, clickAbility) {
+		if(type == 'click') {
+			$.get("./resources/data/hashtag/"+clickAbility+".txt", function(context){
+				document.getElementById('mTitle').innerHTML = clickAbility;
+				document.getElementById('mTable').innerHTML = '';
+				/* $('#mTitle').html(clickAbility);
+				$('#mTable').html(''); */
+				
+				context.split('\r\n').forEach(function(contextLine, index) {
+					if(index == 0) return true;
+					
+					if(contextLine.slice(0,1) == '&') {
+						const txt = contextLine.split('@');
+						const tag = txt[2].split('(');
+
+						let appendCode = '';
+						appendCode = '<tr class="headTr hover-trans">'
+									+ '<td style="text-align: center;">' + txt[0].slice(2) + '</td>'
+									+ '<td>' + txt[1] + '</td>'
+									+ '<td>' + tag[0];
+						
+						/* let tr = document.createElement('tr');
+						tr.setAttribute("class", "headTr hover-trans");
+
+						let lineTd = document.createElement('td'); */
+						
+						if(tag.length > 1) {
+							for(let i = 1; i < tag.length; i++) {
+								const contxt = tag[i].substring(0, tag[i].length-1);
+								const tagType = (contxt == 'Front' || contxt == 'Back') ? 'small-tag tp-tag' : 'small-tag pl-tag';
+
+								appendCode = appendCode + '<div class="' + tagType + '">' + tag[i].substring(0, tag[i].length-1) + '</div>';
+							}
+						}
+						
+						appendCode = appendCode + '</td></tr>';
+						$('#mTable').append(appendCode);
+						mLength.value = parseInt(mLength.value) + 1;
+						return true;
+					}
+
+					if(contextLine.substr(0,1) == '>') {
+						const hidContext = contextLine.slice(2);
+						
+						if(hidContext.substr(0, 4) == '<div') {
+							$('#mTable').append('<tr class="hidTr hidden"><td colspan="3" style="font-size:1.6vw;">' + hidContext + '</td></tr>');
+						} else {
+							$('#mTable').append('<tr class="hidTr hidden"><td colspan="3">' + hidContext + '</td></tr>');
+						}
+					}
+					mLength.value = parseInt(mLength.value) + 1;
+				})
+				
+				if($('.headTr').length >= 15) $('.modal-content').css('height', '70vh');
+				else $('.modal-content').css('height', 'auto');
+			});
+			
+			$('html,body').addClass('fixed');
+		} else {
+			document.getElementById('hidClickModal').value = 99999;
+			clickTag = '';
+			$('html,body').removeClass('fixed');
+		}
+
+		$('#mTable').css('width', '90%');
+		document.querySelector(".modal").classList.toggle("show-modal");
+	}
+	
+	/* 능력 / 태그 */
+	function abilityEvent(e) {
+		const ability = $(e).parent();
+		
+		for(let i=0; i < ability.children().length; i++) {
+			const target = ability.children(':eq('+ i + ')');
+			if(target.hasClass('click') == true && $(e).index() != i) {
+				target.removeClass('click');
+				
+				if(target.hasClass('important') == true) target.addClass('important-looked');
+				else target.addClass('looked');
+				break;
+			}
+		}
+		
+		const abilityTxt = $(e).text();
+		const clickAbility = abilityTxt.substring(abilityTxt.indexOf('#')+1);
+		toggleModal('click', clickAbility);
+		
+		if($(e).hasClass('looked') == true) $(e).removeClass('looked');
+		else if($(e).hasClass('important-looked') == true) $(e).removeClass('important-looked');
+		
+		$(e).addClass('click');
+	};
+		
+	function modalEvent(type, where) {
+		let clickModal = document.getElementById('hidClickModal').value;
+		var i = parseInt(clickModal) + 1;
+		while(true) {
+			if(i >= parseInt(mLength.value)-1) break;
+			
+			var here = where.parent().children('tr:eq(' + i + ')');
+			i++;
+			
+			if(here.hasClass('headTr') == true) {
+				break;
+			} else {
+				if(type == 'close') here.addClass('hidTr');
+				else if(type == 'open') here.removeClass('hidTr');
+			}
+		}
+		
+		if(type == 'open') {
+			if($('.modal-content').innerHeight() >= window.outerHeight*0.7)
+				$('.modal-content').css('height', '70vh');
+			else
+				$('.modal-content').css('height', 'auto');
+		} else if(type == 'close') {
+			if($('.headTr').length >= 15)
+				$('.modal-content').css('height', '70vh');
+			else
+				$('.modal-content').css('height', 'auto');
+		}
+	}
+
+	//해당 내용의 branch가 존재하는지 찾는 함수
+	function checkBranch(startCommit) {
+		var check;
+		
+		var frontLine = $('#timeGraph tr').eq(startCommit-1).children('td:nth-child(2)').text();
+		if(frontLine == '/') check = true;
+		else check = false;
+		
+		return check;
+	}
+
+	function searchBranch(type, startCommit) {
+		var countBranch = 0;
+		
+		if(type == 'area') {
+			var endCommit = 0;
+			
+			for(var i = startCommit-2; i >= 0; i--) {
+				var frontLine = $('#timeGraph tr').eq(i).children('td:nth-child(2)').text();
+				
+				if(frontLine == '/') {
+					countBranch++;
+				} else if(frontLine == '\\') {
+					if(countBranch > 0) {
+						countBranch--;
+					}else {
+						endCommit = i - 1;
+						return endCommit;
+					}
+				}
+			}
+		} else {
+			var branchMap = new Map();
+			
+			var line = 1;
+			branchMap.set(startCommit, line);
+			line = line + 1;
+			branchMap.set(startCommit-1, line);
+			line = line + 1;
+			
+			for(var i = startCommit-2; i >= 0; i--) {
+				var frontLine = $('#timeGraph tr').eq(i).children('td:nth-child(2)').text();
+				
+				if(frontLine == '/') {
+					countBranch++;
+					line = line + 1;
+					branchMap.set(i, line);
+					line = line + 1;
+				} else if(frontLine == '\\') {
+					if(countBranch > 0) {
+						countBranch--;
+						line = line - 1;
+						branchMap.set(i, line);
+						line = line - 1;
+					}else {
+						line = line - 1;
+						branchMap.set(i, line);
+						line = line - 1;
+						branchMap.set(i-1, line);
+						return branchMap;
+					}
+				} else {
+					branchMap.set(i, line);
+				}
+			}
+		}
+	}
+
+	/* 
+	[ Set TimeLine Function ]
+	- setTimeLineData()
+	- setTimeLineColor()
+	- pickColor()
+	 */
+	function setTimeLineData() {
+		$.get("./resources/data/gitTimelineInfo.txt", function(context){
+			context.split('\r\n').forEach(function(contextLine) {
+				const lineInfoArr = contextLine.split(';');
+				let lineArr = [];
+				
+				for(let i = 0; i < 5; i++) {
+					if (i > lineInfoArr[0].length - 1) lineArr[i] = "";
+					else lineArr[i] = lineInfoArr[0].slice(i, i+1);
+				}
+
+				let tr = document.createElement('tr');
+				tr.setAttribute("class", "hover-trans");
+				
+				lineArr.forEach(function(line) {
+					let lineTd = document.createElement('td');
+					lineTd.setAttribute("class", "fontArial");
+					lineTd.innerText = line;
+					tr.appendChild(lineTd);
+				})
+
+				let infoTd = document.createElement('td');
+				lineInfoArr.forEach(function(element, index) {
+					if(index == 0) {
+						return true;
+					}
+					//날짜, 설명
+					if(index <= 2) {
+						infoTd = document.createElement('td');
+						infoTd.onmouseenter = function() {enterBranch(this);}
+						infoTd.onmouseleave = function() {leaveBranch(this);}
+						infoTd.innerText = element;
+					}
+					//기술태그
+					if(index > 2) {
+						let div = document.createElement('div');
+						div.setAttribute("class", "small-tag tl-tag");
+						div.innerText = element;
+						infoTd.appendChild(div);
+					}
+					if(index < 2 || index == lineInfoArr.length - 1) tr.appendChild(infoTd);
+				});
+				
+				document.getElementById('timeGraph').appendChild(tr);
+			});
+			
+			setTimeLineColor();
+		});
+	}
+
+	function setTimeLineColor() {
+		var mainBranchColor;
+		var colorArr = ['#ff1a46', '#ff55b2', '#ffe600', '#9eff03',
+			'#4399ff', '#3bffde', '#a373ff', '#ff8b2c'];
+		
+		for(var i in colorArr) {
+			colorArr[colorArr.length-1] = colorArr.splice(Math.floor(Math.random()*i),1)[0];
+		}
+		
+		for(var k = $('#timeGraph tr').length-1; k >= 0; k--) {
+			var here = $('#timeGraph tr:eq(' + k + ') td:eq(0)');
+			var hereInfo = $('#timeGraph tr:eq(' + k + ') td:eq(6)').text();
+			
+			if(here.text() == '*' && hereInfo != '' && hereInfo.indexOf('Merge') && checkBranch(k)) {
+				
+				var branchMap = searchBranch('branch', k);
+				var color1, color2;
+				
+				color1 = (colorArr.length > 0) ? colorArr.pop() : pickColor();
+				
+				if(branchMap.size == 5) {
+					color2 = (colorArr.length > 0) ? colorArr.pop() : pickColor();
+				}
+				
+				for(var i = k; i > k - branchMap.size; i--) {
+					var value = parseInt(branchMap.get(i)) - 1;
+					var target = $('#timeGraph tr:eq(' + i + ') td:eq(' + value + ')');
+					
+					if(branchMap.size == 5 && i == k-3 && target.text() != '*') target.css('color', color2);
+					else if(target.text() != '*') target.css('color', color1);
+					else continue;
+				}
+				
+				mainBranchColor = color1;
+			} else {
+				if(here.text() != '*') {
+					here.css('color', mainBranchColor);
+				} else {
+					var range = 715;
+					if(colorArr.length > 0) mainBranchColor = colorArr.pop();
+					else mainBranchColor = pickColor();
+				}
+			}
+		}
+	}
+
+	function pickColor() {
+		var rgb = [];
+		
+		rgb[0] = Math.floor(Math.random()*255);
+		rgb[1] = Math.floor(Math.random()*255);
+		
+		if(rgb[0] + rgb[1] >= 400) rgb[2] = Math.floor(Math.random()*(600 - (rgb[0] + rgb[1]))); //rgb합이 600 이하 (흰색 계열 제외)
+		else if(rgb[0] + rgb[1] >= 250) rgb[2] = Math.floor(Math.random()*255);
+		else rgb[2] = Math.floor(Math.random()*105) + 150; //150~255 (검은색 계열 제외)
+		
+		for(var i in rgb) {
+			rgb[rgb.length-1] = rgb.splice(Math.floor(Math.random()*i),1)[0];
+		}
+		
+		return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+	}
+
+	/* 
+	[ TimeLine Event Element, Function ]
+	+ hoverTr
+	+ hoverColor
+	- enterBranch(this)
+	- leaveBranch(this)
+	 */
+
+	//hoverTr[0] : 가지의 시작 (초기값 99999), hoverTr[1] : 가지의 끝
+	var hoverTr = [99999, 0];
+	//hover된 가지의 색을 담는 배열
+	var hoverColor = [];
+
+	function enterBranch(e) {
+		var $target = $(e).parents().children('td:nth-last-child(1)');
+		
+		//timline table의 내용에 mouseover했을 때
+		if($target.text() != '' && $target.text().indexOf('Merge')) {
+			//timeLineEvent($(e), 'enter');
+			var here = $target.parent().index();
+			hoverTr[0] = here;
+			hoverColor = [];
+			
+			//branch가 존재할 때
+			if(checkBranch(here)) {
+				//branch를 찾음
+				var branchMap = searchBranch('branch', here);
+				var endCommit = here - branchMap.size;
+				hoverTr[1] = endCommit + 1;
+				
+				//해당 branch의 색을 뺏음
+				for(var i = here; i > endCommit; i--) {
+					var value = parseInt(branchMap.get(i)) - 1;
+					var target = $('#timeGraph tr:eq(' + i + ') td:eq(' + value + ')');
+					
+					hoverColor.push(value);
+					hoverColor.push(target.css('color'));
+					
+					target.css('color', 'white');
+					target.addClass('hover-trans');
+					target.parent().addClass('hover-bg');
+				}
+				
+			//branch가 존재하지 않을 때
+			} else {
+				$('#timeGraph tr:eq(' + here + ') td:eq(0)').addClass('hover-trans');
+				$('#timeGraph tr:eq(' + here + ')').addClass('hover-bg');
+				hoverTr[1] = here;
+				//hoverColor.push('var(--mainwhite)');
+			}
+		}
+	}
+	
+	function leaveBranch(e) {
+		var $target = $(e).parents().children('td:nth-last-child(1)');
+		
+		if($target.text() != '' && $target.text().indexOf('Merge')) {
+			var here = $target.parent().index();
+			
+			//branch가 존재할 때
+			if(checkBranch(here)) {
+				//branch를 찾음
+				var branchMap = searchBranch('branch', here);
+				var endCommit = here - branchMap.size;
+				
+				//해당 branch의 색을 돌려줌
+				for(var i = here; i >= endCommit; i--) {
+					$('#timeGraph tr').eq(i).removeClass('hover-bg');
+					$('#timeGraph tr:eq(' + i + ') td:eq(' + hoverColor.shift() + ')').css('color', hoverColor.shift());
+				}
+				
+			//branch가 존재하지 않을 때
+			} else {
+				$target.parent().removeClass('hover-bg');
+			}
+		}
+	}
+	
+	$(function() {
+		/* 대기화면 */
+		$('html,body').addClass('fixed');
+		$('#loading').click(function() {
+			$('#loading').hide();
+			$('html,body').removeClass('fixed');
+		});
+
+		setTimeLineData();
+		
+		// 모달창 닫기 아이콘
+		document.querySelector('.close-modal').onmouseenter = function() {
+			document.querySelector('.close-modal i').setAttribute('class', 'fas fa-times-circle');
+		}
+		document.querySelector('.close-modal').onmouseleave = function() {
+			document.querySelector('.close-modal i').setAttribute('class', 'far fa-times-circle');
+		}
+		
+		/* 모달창 탭 */
+		const clickModal = document.getElementById('hidClickModal');
+		var clickTag = '';
+		$(document).on('mouseenter', '.headTr', function(){
+			if($(this).parents().children('tr:eq(' + ($(this).index() + 1) + ')').hasClass('hidden') == true) {
+				$(this).css('cursor', 'pointer');
+				$(this).addClass('hover-color');
+			}
+		}).on('mouseleave', '.headTr', function(){
+			if(clickModal.value != $(this).index()) $('#mTable tr:eq(' + $(this).index() + ')').removeClass('hover-color');
+		}).on('click', '.headTr', function(){
+			if($(this).parents().children('tr:eq(' + ($(this).index() + 1) + ')').hasClass('hidden') == true) {
+				//클릭했던 tr이 아닐 때
+				
+				if(clickModal.value != $(this).index()) {
+					//clickModal이 초기값이 아닐 때 클릭했던 tr의 bgcolor를 돌려놓고 내용을 숨김
+					if(clickModal.value != 99999) {
+						var $lastClick = $(this).parent().children('tr:eq(' + clickModal.value + ')');
+						var head = $lastClick.html();
+						$lastClick.html(head.slice(0, head.length-5) + clickTag + head.slice(head.length-5, head.length));
+						clickTag = '';
+						
+						$lastClick.removeClass('hover-color');
+						modalEvent('close', $(this));
+					}
+					//클릭한 tr의 내용을 보여줌
+					var head = $(this).html();
+					clickTag = head.slice(head.indexOf('<div'), head.length-5);
+					$(this).html(head.replace(clickTag, ''));
+					
+					clickModal.value = $(this).index();
+					modalEvent('open', $(this));
+					
+				//클릭했던 tr일 때
+				} else {
+					//tr의 bgcolor를 돌려놓고 내용을 숨김
+					var head = $(this).html();
+					$(this).html(head.slice(0, head.length-5) + clickTag + head.slice(head.length-5, head.length));
+					clickTag = '';
+					
+					$(this).removeClass('hover-color');
+					modalEvent('close', $(this));
+					clickModal.value = 99999;
+				}
+			}
+		});
+		
+		/* 
+		$('#profileImg').mouseenter(function() {
+			$(this).children().attr('src','./resources/img/profile_img.png');
+		}).mouseleave(function() {
+			$(this).children().attr('src','./resources/img/profile_img_bw.png');
+		});
+		 */
+		
+		/* 도움말 */
+		var trg = 0;
+		$('#helpBtn').mouseenter(function() {
+			$(this).css('transform', 'scale(1.6)');
+		}).mouseleave(function() {
+			$(this).css('transform', 'scale(1.2)');
+		}).click(function() {
+			/* 대기화면 */
+			if(trg == 0) {
+				$('#loading').hide();
+				$('html,body').removeClass('fixed');
+				trg = 1;
+			}
+
+			$(this).css('transform', 'scale(1.2)');
+			$('#mTitle').html('사이트 구성과 설명');
+			$('#mTable').html('<tr><td style="text-align: center;"><div class="modal-img-block"><div class="modal-img one-block"><img src="resources/img/help.png"/></div></div></td></tr>');
+			
+			$('html,body').addClass('fixed');
+			$('#mTable').css('width', '100%');
+			$('.modal-content').css('height', '70vh');
+			document.querySelector(".modal").classList.toggle("show-modal");
+		});
+		
+	});
+	
+</script>
