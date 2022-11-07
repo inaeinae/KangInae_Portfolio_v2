@@ -81,15 +81,6 @@
 				
 				<div>
 					<table id="timeGraph">
-						<!-- <tr class="hover-trans">
-							<td>tdArr[0]</td>
-							<td>tdArr[1]</td>
-							<td>tdArr[2]</td>
-							<td>tdArr[3]</td>
-							<td>tdArr[4]</td>
-							<td>tableArr[1]</td>
-							<td>tableArr[2]</td>
-						</tr> -->
 					</table>
 				</div>
 			</div>
@@ -341,7 +332,8 @@
 	 */
 	function setTimeLineData() {
 		$.get("./resources/data/gitTimelineInfo.txt", function(context){
-			context.split('\r\n').forEach(function(contextLine) {
+			context = context.replace(/\r/g,'');
+			context.split('\n').forEach(function(contextLine) {
 				const lineInfoArr = contextLine.split(';');
 				let lineArr = [];
 				
