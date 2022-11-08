@@ -334,8 +334,13 @@
 		$.get("./resources/data/gitTimelineInfo.txt", function(context){
 			context = context.replace(/\r/g,'');
 			context.split('\n').forEach(function(contextLine) {
-				const lineInfoArr = contextLine.split(';');
 				let lineArr = [];
+				const lineInfoArr = contextLine.split(';');
+				// 0 : TimeLine
+				// 1 : LineCode
+				// 2 : 날짜
+				// 3 : 설명
+				// 4~ : 태그
 				
 				for(let i = 0; i < 5; i++) {
 					if (i > lineInfoArr[0].length - 1) lineArr[i] = "";
@@ -354,24 +359,33 @@
 
 				let infoTd = document.createElement('td');
 				lineInfoArr.forEach(function(element, index) {
+					//TimeLine
 					if(index == 0) {
 						return true;
 					}
+					//LineCode
+					if(index == 1) {
+						if(element != "") {
+							tr.setAttribute("code", element);
+						}
+						return true;
+					}
 					//날짜, 설명
-					if(index <= 2) {
+					if(index <= 3) {
 						infoTd = document.createElement('td');
-						infoTd.onmouseenter = function() {enterBranch(this);}
-						infoTd.onmouseleave = function() {leaveBranch(this);}
+						infoTd.onmouseenter = function() {toggleBranch(this);}
+						infoTd.onmouseleave = function() {toggleBranch(this);}
+						infoTd.setAttribute('type', 'context');
 						infoTd.innerText = element;
 					}
 					//기술태그
-					if(index > 2) {
+					if(index > 3) {
 						let div = document.createElement('div');
 						div.setAttribute("class", "small-tag tl-tag");
 						div.innerText = element;
 						infoTd.appendChild(div);
 					}
-					if(index < 2 || index == lineInfoArr.length - 1) tr.appendChild(infoTd);
+					if(index < 3 || index == lineInfoArr.length - 1) tr.appendChild(infoTd);
 				});
 				
 				document.getElementById('timeGraph').appendChild(tr);
@@ -389,27 +403,65 @@
 		for(var i in colorArr) {
 			colorArr[colorArr.length-1] = colorArr.splice(Math.floor(Math.random()*i),1)[0];
 		}
+
+		/* let lineObj = {};
+		let colorObj = {};
+		const trList = document.querySelectorAll('tr');
+		for(let tri = trList.length; tri > 0; tri--) {
+			const tr = trList.item(tri);
+			const tdList  = tr.querySelectorAll('td[class]');
+
+			lineObj[tri] = ['','','','',''];
+			colorObj[tri] = ['','','','',''];
+			for(let tdi = tdList.length; tdi > 0; tdi--) {
+				const td = tdList.item(tdi);
+
+				if(td.innerHTML.replace(' ','') == '') return true;
+				if(td.innerHTML == '*' && tdi == 0) return true;
+
+				if(td.innerHTML != '*') {
+					if(lineObj[tri-1][tdi] != '*' && colorObj[tri-1][tdi] != '') {
+						td.css('color', colorObj[tri-1][tdi]);
+						return true;
+					}
+
+					const color1 = (colorArr.length > 0) ? colorArr.pop() : pickColor();
+					td.css('color', color1);
+					return true;
+				}
+				
+				if(lineObj[tri-1][0])
+
+				lineObj[tri][tdi] = td.innerHTML.replace(' ','');
+			}
+		} */
 		
 		for(var k = $('#timeGraph tr').length-1; k >= 0; k--) {
 			var here = $('#timeGraph tr:eq(' + k + ') td:eq(0)');
 			var hereInfo = $('#timeGraph tr:eq(' + k + ') td:eq(6)').text();
 			
-			if(here.text() == '*' && hereInfo != '' && hereInfo.indexOf('Merge') && checkBranch(k)) {
-				
+			console.log(here.text());
+			console.log(hereInfo);
+
+			if(here.text() == '*' && checkBranch(k)) {
 				var branchMap = searchBranch('branch', k);
 				var color1, color2;
 				
 				color1 = (colorArr.length > 0) ? colorArr.pop() : pickColor();
 				
-				if(branchMap.size == 5) {
+				if(branchMap.size >= 5) {
 					color2 = (colorArr.length > 0) ? colorArr.pop() : pickColor();
 				}
 				
+				var point = 0;
 				for(var i = k; i > k - branchMap.size; i--) {
 					var value = parseInt(branchMap.get(i)) - 1;
 					var target = $('#timeGraph tr:eq(' + i + ') td:eq(' + value + ')');
-					
+
+					if(target.text() == '*' && value != 0) point = i;
+
 					if(branchMap.size == 5 && i == k-3 && target.text() != '*') target.css('color', color2);
+					else if(branchMap.size > 5 && i < point && target.text() != '*') target.css('color', color2);
 					else if(target.text() != '*') target.css('color', color1);
 					else continue;
 				}
@@ -448,10 +500,38 @@
 	[ TimeLine Event Element, Function ]
 	+ hoverTr
 	+ hoverColor
-	- enterBranch(this)
-	- leaveBranch(this)
+	- toggleBranch(this)
 	 */
+	
+	function toggleBranch(e) {
+		const code = e.parentElement.getAttribute('code');
+		if (code == undefined) return;
+		if (e.parentElement.lastChild.innerHTML == '') return;
 
+		const trList = document.querySelectorAll('#timeGraph > tr');
+		const codePoints = document.querySelectorAll('#timeGraph > tr[code='+code+']');
+
+		let minTrIndex = 0;
+		let maxTrIndex = 0;
+
+		codePoints.forEach(function(point, i) {
+			const trIndex = [].indexOf.call(trList, point);
+			if(i == 0) {
+				minTrIndex = trIndex;
+				maxTrIndex = trIndex;
+				return true;
+			}
+			if(minTrIndex > trIndex) minTrIndex = trIndex;
+			if(maxTrIndex < trIndex) maxTrIndex = trIndex;
+		});
+
+		let branchLines;
+		for(let i = minTrIndex; i <= maxTrIndex; i++) {
+			trList[i].classList.toggle('hover-bg');
+		}
+	}
+
+	/* 
 	//hoverTr[0] : 가지의 시작 (초기값 99999), hoverTr[1] : 가지의 끝
 	var hoverTr = [99999, 0];
 	//hover된 가지의 색을 담는 배열
@@ -521,7 +601,8 @@
 			}
 		}
 	}
-	
+	 */
+
 	$(function() {
 		/* 대기화면 */
 		$('html,body').addClass('fixed');

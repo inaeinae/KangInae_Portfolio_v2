@@ -99,6 +99,8 @@ html,body {
 
 #timeGraph tr td:nth-last-child(2){
 	padding-left: 3%;
+	font-size: 0.95vw;
+	text-align: left;
 	color: var(--maingray);
 }
 
