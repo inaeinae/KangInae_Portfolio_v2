@@ -141,10 +141,10 @@
 	
 	/* 능력 모달창 */
 	var mLength = document.getElementById('hidModalLength');
-	function toggleModal(type, clickAbility) {
+	async function toggleModal(type, clickAbility) {
 		if(type == 'click') {
 			clickAbility = clickAbility.replace('#','%23');
-			$.get("./resources/data/hashtag/"+clickAbility+".txt", function(context){
+			await $.get("./resources/data/hashtag/"+clickAbility+".txt", function(context) {
 				const contextLineArr = context.split('\r\n');
 				document.getElementById('mTitle').innerHTML = contextLineArr[0];
 				document.getElementById('mTable').innerHTML = '';
