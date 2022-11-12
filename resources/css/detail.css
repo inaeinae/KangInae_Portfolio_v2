@@ -9,14 +9,13 @@ html,body {
 
 /* &배경 */
 .bg-circle {
-	width: 43%;
-	padding-bottom: 43%;
+	width: 35%;
+	padding-bottom: 35%;
 	border-radius: 50%;
-	/* border: 10px solid blue; */
-	border: 10px solid var(--pointblue);
+	border: 0.5em solid var(--pointblue);
 	
-	left: -13%;
-	bottom: -15%;
+	left: -10%;
+	bottom: -12%;
 	
 	position: fixed;
 	transition: all ease 1.5s;
@@ -46,7 +45,7 @@ html,body {
 }
 
 .content{
-	width: 70%;
+	width: 80%;
 	
 	position: absolute;
 	right: 0;
@@ -110,10 +109,18 @@ html,body {
 }
 
 .hover-bg{
-	background-color: rgba(256, 256, 256, 0.05);
+	background-color: rgba(256, 256, 256, 0.06);
 }
 
-.hover-color{
+.hover-color > td{
+	transition: all ease 0.5s;
+}
+
+.hover-color > td:last-child{
+	color: var(--maingray) !important;
+}
+
+.modal-hover-color{
 	color: var(--pointblue);
 }
 
@@ -139,8 +146,10 @@ html,body {
 	padding-right: 1.5%;
 	margin-right: 1%;
 	font-size: 0.85vw;
-	cursor: pointer;
 	position: relative;
+}
+.contents {
+	cursor: pointer;
 }
 .looked{
 	color: #4e4e4e;
@@ -154,8 +163,8 @@ html,body {
 	color: var(--pointblue);
 }
 .important-looked{
-	border: 0.155vw #26407b solid;
-	color: #26407b;
+	border: 0.155vw var(--darkblue) solid;
+	color: var(--darkblue);
 }
 
 /* 클릭 태그 */

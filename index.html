@@ -41,35 +41,43 @@
 			<p id="subInfo">
 				1996. 09. 05<br>
 				kkin06@naver.com<br>
-				서일대학교, 소프트웨어공학과
+				서일대학교, 소프트웨어공학과 (4년)
 			</p>
 		</div>
 		
 		<div class="detail-info">
 			<div class="block" id="programInfo" style="width: 100%;">
 				<p class="subtitle">
-					Ability
+					Skills
 				</p>
 				
 				<div class="abilityList">
-					<div onclick="abilityEvent(this);" class="ability">#AndroidStudio</div>
-					<div onclick="abilityEvent(this);" class="ability">#Arduino</div>
-					<div onclick="abilityEvent(this);" class="ability">#AWS</div>
-					<div onclick="abilityEvent(this);" class="ability">#ASP</div>
-					<div onclick="abilityEvent(this);" class="ability">#C</div>
-					<div onclick="abilityEvent(this);" class="ability important">#C#</div>
-					<div onclick="abilityEvent(this);" class="ability">#C++</div>
-					<div onclick="abilityEvent(this);" class="ability">#Database</div>
-					<div onclick="abilityEvent(this);" class="ability">#Git</div>
-					<div onclick="abilityEvent(this);" class="ability important"><div class="new"></div>#HTML & JSP & CSS & JavaScript & jQuery</div>
-					<div onclick="abilityEvent(this);" class="ability">#Illustrator & Photoshop</div>
-					<div onclick="abilityEvent(this);" class="ability">#Java</div>
-					<div onclick="abilityEvent(this);" class="ability">#MFC</div>
-					<div onclick="abilityEvent(this);" class="ability important">#Spring</div>
-					<div onclick="abilityEvent(this);" class="ability">#Unity</div>
-					<div onclick="abilityEvent(this);" class="ability">#Unix</div>
-					<div onclick="abilityEvent(this);" class="ability">#VisualBasic</div>
-					<div onclick="abilityEvent(this);" class="ability">#...</div>
+					<div class="ability contents important">#Java</div>
+					<div class="ability contents important">#Spring</div>
+					<div class="ability contents">#C</div>
+					<div class="ability contents important">#C#</div>
+					<div class="ability contents">#C++</div>
+					<div class="ability contents">#FrontEnd</div>
+
+					<div class="ability">#MySql</div>
+					<div class="ability">#Oracle</div>
+					<div class="ability">#MsSql</div>
+
+					<div class="ability">#Git</div>
+					<div class="ability"><div class="new"></div>#SVN</div>
+
+					<div class="ability contents">#AWS</div>
+					<div class="ability"><div class="new"></div>#Jenkins</div>
+
+					<div class="ability contents">#AndroidStudio</div>
+					<div class="ability">#VisualBasic</div>
+					<div class="ability">#Unity</div>
+
+					<!-- <div class="ability">#MFC</div> -->
+					<div class="ability">#Unix</div>
+					<!-- <div class="ability">#Arduino</div> -->
+					<div class="ability contents">#Illustrator & Photoshop</div>
+					<!-- <div class="ability contents">#...</div> -->
 				</div>
 			</div>
 			
@@ -92,7 +100,7 @@
 	<input id="hidModalLength" value="0" type="hidden" />
 	<div class="modal">
 		<div class="modal-content">
-			<span class="close-modal" onclick="toggleModal();" on><i class="far fa-times-circle"></i></span>
+			<span class="close-modal" onclick="toggleModal();"><i class="far fa-times-circle"></i></span>
 			<p class="modal-title title" id="mTitle"></p>
 			<div id="mContext">
 				<table id="mTable"></table>
@@ -107,7 +115,7 @@
 	/* 배경 스타일 */
 	$(window).on('scroll', function() {
 		var scrollPercent = ($(window).scrollTop() / ($(document).outerHeight() - $(window).height()))*10;
-		var transSize = 43 + (scrollPercent*1.5)
+		var transSize = 30 + (scrollPercent*1.5)
 		$('.bg-circle').css({'width': transSize + '%', 'padding-bottom': transSize + '%'});
 	});
 	
@@ -135,13 +143,13 @@
 	var mLength = document.getElementById('hidModalLength');
 	function toggleModal(type, clickAbility) {
 		if(type == 'click') {
+			clickAbility = clickAbility.replace('#','%23');
 			$.get("./resources/data/hashtag/"+clickAbility+".txt", function(context){
-				document.getElementById('mTitle').innerHTML = clickAbility;
+				const contextLineArr = context.split('\r\n');
+				document.getElementById('mTitle').innerHTML = contextLineArr[0];
 				document.getElementById('mTable').innerHTML = '';
-				/* $('#mTitle').html(clickAbility);
-				$('#mTable').html(''); */
 				
-				context.split('\r\n').forEach(function(contextLine, index) {
+				contextLineArr.forEach(function(contextLine, index) {
 					if(index == 0) return true;
 					
 					if(contextLine.slice(0,1) == '&') {
@@ -153,11 +161,6 @@
 									+ '<td style="text-align: center;">' + txt[0].slice(2) + '</td>'
 									+ '<td>' + txt[1] + '</td>'
 									+ '<td>' + tag[0];
-						
-						/* let tr = document.createElement('tr');
-						tr.setAttribute("class", "headTr hover-trans");
-
-						let lineTd = document.createElement('td'); */
 						
 						if(tag.length > 1) {
 							for(let i = 1; i < tag.length; i++) {
@@ -269,12 +272,19 @@
 
 	function searchBranch(type, startCommit) {
 		var countBranch = 0;
+		var targetTd = 0;
+
+		document.querySelectorAll('tr')[startCommit].childNodes.forEach(function(e, i) {
+        	if(e.innerHTML == '*') {
+				targetTd = i + 2;
+			}
+		});
 		
 		if(type == 'area') {
 			var endCommit = 0;
 			
 			for(var i = startCommit-2; i >= 0; i--) {
-				var frontLine = $('#timeGraph tr').eq(i).children('td:nth-child(2)').text();
+				var frontLine = $('#timeGraph tr').eq(i).children('td:nth-child('+targetTd+')').text();
 				
 				if(frontLine == '/') {
 					countBranch++;
@@ -297,7 +307,7 @@
 			line = line + 1;
 			
 			for(var i = startCommit-2; i >= 0; i--) {
-				var frontLine = $('#timeGraph tr').eq(i).children('td:nth-child(2)').text();
+				var frontLine = $('#timeGraph tr').eq(i).children('td:nth-child('+targetTd+')').text();
 				
 				if(frontLine == '/') {
 					countBranch++;
@@ -403,46 +413,11 @@
 		for(var i in colorArr) {
 			colorArr[colorArr.length-1] = colorArr.splice(Math.floor(Math.random()*i),1)[0];
 		}
-
-		/* let lineObj = {};
-		let colorObj = {};
-		const trList = document.querySelectorAll('tr');
-		for(let tri = trList.length; tri > 0; tri--) {
-			const tr = trList.item(tri);
-			const tdList  = tr.querySelectorAll('td[class]');
-
-			lineObj[tri] = ['','','','',''];
-			colorObj[tri] = ['','','','',''];
-			for(let tdi = tdList.length; tdi > 0; tdi--) {
-				const td = tdList.item(tdi);
-
-				if(td.innerHTML.replace(' ','') == '') return true;
-				if(td.innerHTML == '*' && tdi == 0) return true;
-
-				if(td.innerHTML != '*') {
-					if(lineObj[tri-1][tdi] != '*' && colorObj[tri-1][tdi] != '') {
-						td.css('color', colorObj[tri-1][tdi]);
-						return true;
-					}
-
-					const color1 = (colorArr.length > 0) ? colorArr.pop() : pickColor();
-					td.css('color', color1);
-					return true;
-				}
-				
-				if(lineObj[tri-1][0])
-
-				lineObj[tri][tdi] = td.innerHTML.replace(' ','');
-			}
-		} */
 		
 		for(var k = $('#timeGraph tr').length-1; k >= 0; k--) {
 			var here = $('#timeGraph tr:eq(' + k + ') td:eq(0)');
 			var hereInfo = $('#timeGraph tr:eq(' + k + ') td:eq(6)').text();
 			
-			console.log(here.text());
-			console.log(hereInfo);
-
 			if(here.text() == '*' && checkBranch(k)) {
 				var branchMap = searchBranch('branch', k);
 				var color1, color2;
@@ -510,7 +485,8 @@
 
 		const trList = document.querySelectorAll('#timeGraph > tr');
 		const codePoints = document.querySelectorAll('#timeGraph > tr[code='+code+']');
-
+		
+		const pointIndex = [].indexOf.call(trList, e.parentElement); //커밋 인덱스
 		let minTrIndex = 0;
 		let maxTrIndex = 0;
 
@@ -528,80 +504,9 @@
 		let branchLines;
 		for(let i = minTrIndex; i <= maxTrIndex; i++) {
 			trList[i].classList.toggle('hover-bg');
+			if(i != pointIndex) trList[i].classList.toggle('hover-color');
 		}
 	}
-
-	/* 
-	//hoverTr[0] : 가지의 시작 (초기값 99999), hoverTr[1] : 가지의 끝
-	var hoverTr = [99999, 0];
-	//hover된 가지의 색을 담는 배열
-	var hoverColor = [];
-
-	function enterBranch(e) {
-		var $target = $(e).parents().children('td:nth-last-child(1)');
-		
-		//timline table의 내용에 mouseover했을 때
-		if($target.text() != '' && $target.text().indexOf('Merge')) {
-			//timeLineEvent($(e), 'enter');
-			var here = $target.parent().index();
-			hoverTr[0] = here;
-			hoverColor = [];
-			
-			//branch가 존재할 때
-			if(checkBranch(here)) {
-				//branch를 찾음
-				var branchMap = searchBranch('branch', here);
-				var endCommit = here - branchMap.size;
-				hoverTr[1] = endCommit + 1;
-				
-				//해당 branch의 색을 뺏음
-				for(var i = here; i > endCommit; i--) {
-					var value = parseInt(branchMap.get(i)) - 1;
-					var target = $('#timeGraph tr:eq(' + i + ') td:eq(' + value + ')');
-					
-					hoverColor.push(value);
-					hoverColor.push(target.css('color'));
-					
-					target.css('color', 'white');
-					target.addClass('hover-trans');
-					target.parent().addClass('hover-bg');
-				}
-				
-			//branch가 존재하지 않을 때
-			} else {
-				$('#timeGraph tr:eq(' + here + ') td:eq(0)').addClass('hover-trans');
-				$('#timeGraph tr:eq(' + here + ')').addClass('hover-bg');
-				hoverTr[1] = here;
-				//hoverColor.push('var(--mainwhite)');
-			}
-		}
-	}
-	
-	function leaveBranch(e) {
-		var $target = $(e).parents().children('td:nth-last-child(1)');
-		
-		if($target.text() != '' && $target.text().indexOf('Merge')) {
-			var here = $target.parent().index();
-			
-			//branch가 존재할 때
-			if(checkBranch(here)) {
-				//branch를 찾음
-				var branchMap = searchBranch('branch', here);
-				var endCommit = here - branchMap.size;
-				
-				//해당 branch의 색을 돌려줌
-				for(var i = here; i >= endCommit; i--) {
-					$('#timeGraph tr').eq(i).removeClass('hover-bg');
-					$('#timeGraph tr:eq(' + i + ') td:eq(' + hoverColor.shift() + ')').css('color', hoverColor.shift());
-				}
-				
-			//branch가 존재하지 않을 때
-			} else {
-				$target.parent().removeClass('hover-bg');
-			}
-		}
-	}
-	 */
 
 	$(function() {
 		/* 대기화면 */
@@ -610,8 +515,18 @@
 			$('#loading').hide();
 			$('html,body').removeClass('fixed');
 		});
-
+		
 		setTimeLineData();
+
+		document.querySelector('.modal').onclick = (event) => {
+			const eventClass = event.target.className.split(' ');
+			if(!eventClass.includes('modal')) return;
+			document.querySelector('.close-modal').onclick();
+		}
+
+		document.querySelectorAll('.abilityList > div.contents').forEach(function(e) {
+			e.onclick = function() { abilityEvent(this); }
+		})
 		
 		// 모달창 닫기 아이콘
 		document.querySelector('.close-modal').onmouseenter = function() {
@@ -627,10 +542,10 @@
 		$(document).on('mouseenter', '.headTr', function(){
 			if($(this).parents().children('tr:eq(' + ($(this).index() + 1) + ')').hasClass('hidden') == true) {
 				$(this).css('cursor', 'pointer');
-				$(this).addClass('hover-color');
+				$(this).addClass('modal-hover-color');
 			}
 		}).on('mouseleave', '.headTr', function(){
-			if(clickModal.value != $(this).index()) $('#mTable tr:eq(' + $(this).index() + ')').removeClass('hover-color');
+			if(clickModal.value != $(this).index()) $('#mTable tr:eq(' + $(this).index() + ')').removeClass('modal-hover-color');
 		}).on('click', '.headTr', function(){
 			if($(this).parents().children('tr:eq(' + ($(this).index() + 1) + ')').hasClass('hidden') == true) {
 				//클릭했던 tr이 아닐 때
@@ -643,7 +558,7 @@
 						$lastClick.html(head.slice(0, head.length-5) + clickTag + head.slice(head.length-5, head.length));
 						clickTag = '';
 						
-						$lastClick.removeClass('hover-color');
+						$lastClick.removeClass('modal-hover-color');
 						modalEvent('close', $(this));
 					}
 					//클릭한 tr의 내용을 보여줌
@@ -661,20 +576,12 @@
 					$(this).html(head.slice(0, head.length-5) + clickTag + head.slice(head.length-5, head.length));
 					clickTag = '';
 					
-					$(this).removeClass('hover-color');
+					$(this).removeClass('modal-hover-color');
 					modalEvent('close', $(this));
 					clickModal.value = 99999;
 				}
 			}
 		});
-		
-		/* 
-		$('#profileImg').mouseenter(function() {
-			$(this).children().attr('src','./resources/img/profile_img.png');
-		}).mouseleave(function() {
-			$(this).children().attr('src','./resources/img/profile_img_bw.png');
-		});
-		 */
 		
 		/* 도움말 */
 		var trg = 0;

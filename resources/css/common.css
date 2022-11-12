@@ -34,6 +34,7 @@ html, body {
 	--mainblack: #232931;
 	--lightgray: #9c9c9c;
 	--pointblue: #2e62da;
+	--darkblue: #26407b;
 }
 
 img[src$=".gif"], img[src$=".png"] {
