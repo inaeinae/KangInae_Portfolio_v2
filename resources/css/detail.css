@@ -112,12 +112,17 @@ html,body {
 	background-color: rgba(256, 256, 256, 0.06);
 }
 
-.hover-color > td{
+.hover-color > td, .hover-color > td > div{
 	transition: all ease 0.5s;
 }
 
 .hover-color > td:last-child{
-	color: var(--maingray) !important;
+	color: var(--maingray);
+}
+
+.hover-color > td:last-child > div{
+	color: var(--maingray);
+	border: 0.155vw var(--maingray) solid;
 }
 
 .modal-hover-color{
